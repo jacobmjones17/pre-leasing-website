@@ -131,7 +131,11 @@
                             :class="{ 'is-active': index === activePhotoIndex }"
                         >
                             <div class="media-box" @click="openLightbox(index)">
-                                <img :src="photo.src" :alt="photo.alt" />
+                                <img
+                                    :src="photo.src"
+                                    :alt="photo.alt"
+                                    :style="{ objectFit: photo.fit || 'cover' }"
+                                />
                             </div>
                             <p class="media-text">
                                 <strong>{{ photo.title }}</strong>
@@ -249,8 +253,28 @@
                             Join the interest list for Pilot Station Place. You can also
                             optionally request a showing by checking the box below.
                         </p>
+                        <div class="form-status" aria-live="polite">
+                            <div
+                                v-if="submitStatus === 'success'"
+                                class="form-banner form-banner-success"
+                            >
+                                Thank you! Your information has been received. We'll be in touch soon.
+                            </div>
+                            <div
+                                v-else-if="submitStatus === 'error'"
+                                class="form-banner form-banner-error"
+                            >
+                                Something went wrong submitting the form. Please try again in a
+                                moment.
+                            </div>
+                        </div>
                     </div>
-                    <form name="interest" method="POST" data-netlify="true">
+                    <form
+                        name="interest"
+                        method="POST"
+                        data-netlify="true"
+                        @submit.prevent="handleSubmit"
+                    >
                         <input type="hidden" name="form-name" value="interest" />
                         <input type="hidden" name="interestType" :value="interestType" />
                         <input type="text" name="name" placeholder="Full name" required />
@@ -263,7 +287,9 @@
                         <textarea name="details" placeholder="Move-in timeline or questions"></textarea>
                         <textarea v-if="wantsShowing" name="showingDetails"
                             placeholder="Preferred showing days / times and any questions"></textarea>
-                        <button type="submit" class="btn-primary">Submit</button>
+                        <button type="submit" class="btn-primary" :disabled="isSubmitting">
+                            {{ isSubmitting ? 'Submitting...' : 'Submit' }}
+                        </button>
                     </form>
                 </div>
             </section>
@@ -310,30 +336,37 @@ import floorPlanImage from '../images/floor plan.png';
 const wantsShowing = ref(false);
 const interestType = computed(() => (wantsShowing.value ? 'showing' : 'join'));
 
+const isSubmitting = ref(false);
+const submitStatus = ref(null); // 'success' | 'error' | null
+
 const photos = [
     {
         title: 'Front exterior',
         description: 'Street view of the duplex homes.',
         src: frontImage,
         alt: 'Front exterior of Pilot Station Place duplex homes',
+        fit: 'cover',
     },
     {
         title: 'Kitchen and living area',
         description: 'Open kitchen and living space with modern finishes.',
         src: kitchenImage,
         alt: 'Interior view of the kitchen and living area',
+        fit: 'cover',
     },
     {
         title: 'Bathroom finishes',
         description: 'Bathroom with modern fixtures and clean finishes.',
         src: bathroomImage,
         alt: 'Interior bathroom finishes',
+        fit: 'cover',
     },
     {
         title: 'Floor plan',
         description: '2 bed / 2 bath layout for each duplex home.',
         src: floorPlanImage,
         alt: 'Floor plan of the 2 bed 2 bath duplex home',
+        fit: 'cover',
     },
 ];
 
@@ -360,6 +393,46 @@ const closeLightbox = () => {
 const activeLightboxPhoto = computed(() =>
     lightboxIndex.value === null ? null : photos[lightboxIndex.value]
 );
+
+const handleSubmit = async (event) => {
+    const form = event.target;
+
+    if (isSubmitting.value) return;
+
+    isSubmitting.value = true;
+    submitStatus.value = null;
+
+    try {
+        const formData = new FormData(form);
+
+        const payload = {
+            name: formData.get('name') || '',
+            email: formData.get('email') || '',
+            phone: formData.get('phone') || '',
+            interestType: formData.get('interestType') || interestType.value,
+            details: formData.get('details') || '',
+            showingDetails: formData.get('showingDetails') || '',
+            site_url: window.location.origin,
+        };
+
+        const response = await fetch('/.netlify/functions/submission-created', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) throw new Error('Form submission failed');
+
+        submitStatus.value = 'success';
+        form.reset();
+        wantsShowing.value = false;
+    } catch (error) {
+        console.error(error);
+        submitStatus.value = 'error';
+    } finally {
+        isSubmitting.value = false;
+    }
+};
 
 const heroBackground = computed(() => ({
     backgroundImage: `linear-gradient(135deg, rgba(2, 6, 23, 0.78), rgba(2, 6, 23, 0.7)), url(${heroImage})`,
@@ -840,7 +913,7 @@ body {
 }
 
 .media-box {
-    height: 170px;
+    height: 150px;
     border-radius: 10px;
     background-color: #020617;
     overflow: hidden;
@@ -849,7 +922,6 @@ body {
 .media-box img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
     display: block;
 }
 
@@ -1027,6 +1099,29 @@ body {
     width: auto;
     margin: 0;
     accent-color: var(--accent-strong);
+}
+
+.form-status {
+    margin-top: 8px;
+}
+
+.form-banner {
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    margin-top: 8px;
+}
+
+.form-banner-success {
+    background-color: rgba(22, 163, 74, 0.16);
+    border: 1px solid rgba(22, 163, 74, 0.7);
+    color: #bbf7d0;
+}
+
+.form-banner-error {
+    background-color: rgba(220, 38, 38, 0.18);
+    border: 1px solid rgba(239, 68, 68, 0.85);
+    color: #fecaca;
 }
 
 form {
