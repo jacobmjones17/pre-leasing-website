@@ -7,6 +7,19 @@
   </head>
   <body>
     <div id="app"></div>
+
+    <!-- Hidden Netlify form so Netlify can register the SPA form -->
+    <form name="interest" method="POST" data-netlify="true" hidden>
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <input type="tel" name="phone" />
+      <select name="interestType">
+        <option value="join">Join pre-leasing list</option>
+        <option value="showing">Request a showing</option>
+      </select>
+      <textarea name="details"></textarea>
+    </form>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
