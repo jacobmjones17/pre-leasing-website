@@ -1,7 +1,8 @@
-const nodemailer = require('nodemailer');
-
 exports.handler = async (event) => {
 	try {
+		// Nodemailer v7 is ESM-only; use dynamic import so this works in Netlify's CJS runtime
+		const nodemailer = (await import('nodemailer')).default;
+
 		if (!event.body) {
 			return { statusCode: 400, body: 'Missing request body' };
 		}
