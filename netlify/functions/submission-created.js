@@ -1,6 +1,19 @@
-const nodemailer = require('nodemailer');
-
 exports.handler = async (event) => {
+	let nodemailer;
+	try {
+		nodemailer = require('nodemailer');
+	} catch (error) {
+		console.error('Failed to load nodemailer:', error);
+		return {
+			statusCode: 500,
+			headers: {
+				'Access-Control-Allow-Origin': '*',
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ error: 'nodemailer load failed', details: error.message }),
+		};
+	}
+
 	try {
 		if (!event.body) {
 			return {
