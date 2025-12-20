@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "nodemailer": "^7.0.11",
+  "nodemailer": "^6.9.15",
     "vue": "^3.5.0"
   },
   "devDependencies": {
