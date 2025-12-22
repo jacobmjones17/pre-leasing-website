@@ -411,11 +411,20 @@ const handleSubmit = async (event) => {
             phone: formData.get('phone') || '',
             interestType: formData.get('interestType') || interestType.value,
             details: formData.get('details') || '',
+            // Map to `message` as well so the Faltor `contact`
+            // function (which requires name, email, message)
+            // can be used as a backend.
+            message: formData.get('details') || '',
             showingDetails: formData.get('showingDetails') || '',
             site_url: window.location.origin,
         };
 
-        const response = await fetch('/.netlify/functions/submission-created', {
+        // Use a configurable function URL so production can point at
+        // the working Faltor Drafting function, while dev can still
+        // hit the local Netlify function.
+        const functionUrl = import.meta.env.VITE_SUBMISSION_FUNCTION_URL || '/.netlify/functions/submission-created';
+
+        const response = await fetch(functionUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload),
