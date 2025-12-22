@@ -1,0 +1,4 @@
+[functions]
+  # Use the classic Node bundler, which is more compatible with packages
+  # like nodemailer and avoids some esbuild bundling issues.
+  node_bundler = "zisi"
