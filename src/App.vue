@@ -405,29 +405,21 @@ const handleSubmit = async (event) => {
     try {
         const formData = new FormData(form);
 
-        const payload = {
-            name: formData.get('name') || '',
-            email: formData.get('email') || '',
-            phone: formData.get('phone') || '',
-            interestType: formData.get('interestType') || interestType.value,
-            details: formData.get('details') || '',
-            // Map to `message` as well so the Faltor `contact`
-            // function (which requires name, email, message)
-            // can be used as a backend.
-            message: formData.get('details') || '',
-            showingDetails: formData.get('showingDetails') || '',
-            site_url: window.location.origin,
-        };
+        // Ensure interestType and site_url are present on the form data
+        if (!formData.get('interestType')) {
+            formData.append('interestType', interestType.value);
+        }
+        formData.append('site_url', window.location.origin);
 
         // Use a configurable function URL so production can point at
         // the working Faltor Drafting function, while dev can still
         // hit the local Netlify function.
         const functionUrl = import.meta.env.VITE_SUBMISSION_FUNCTION_URL || '/.netlify/functions/submission-created';
 
+        // Send raw FormData (multipart/form-data) like the FALTOR contact form
         const response = await fetch(functionUrl, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
+            body: formData,
         });
 
         if (!response.ok) throw new Error('Form submission failed');
