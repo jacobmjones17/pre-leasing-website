@@ -1,4 +1,10 @@
+[build]
+  publish = "dist"
+  # Build the Vue app, then install function dependencies similar to your working repo
+  command = "npm run build && cd netlify/functions && npm install"
+
+[dev]
+  port = 8888
+
 [functions]
-  # Use the classic Node bundler, which is more compatible with packages
-  # like nodemailer and avoids some esbuild bundling issues.
-  node_bundler = "zisi"
+  directory = "netlify/functions"
