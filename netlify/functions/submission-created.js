@@ -1,8 +1,17 @@
 const nodemailer = require('nodemailer');
+const multipart = require('parse-multipart-data');
 
 exports.handler = async (event, context) => {
+	console.log('submission-created invoked');
+	console.log('HTTP method:', event.httpMethod);
+	const rawContentType = event.headers && (event.headers['content-type'] || event.headers['Content-Type'] || '');
+	console.log('Content-Type:', rawContentType);
+	console.log('isBase64Encoded:', event.isBase64Encoded);
+	console.log('Body length:', event.body ? event.body.length : 0);
+
 	// Only allow POST
 	if (event.httpMethod && event.httpMethod !== 'POST') {
+		console.warn('Rejecting non-POST request');
 		return {
 			statusCode: 405,
 			headers: {
@@ -13,10 +22,11 @@ exports.handler = async (event, context) => {
 		};
 	}
 
-	// Parse JSON body
+	// Parse body: support both JSON and multipart/form-data (FormData)
 	let data;
 	try {
 		if (!event.body) {
+			console.error('Missing request body');
 			return {
 				statusCode: 400,
 				headers: {
@@ -27,21 +37,49 @@ exports.handler = async (event, context) => {
 			};
 		}
 
-		data = JSON.parse(event.body);
+		const contentType = (rawContentType || '').toLowerCase();
+		if (contentType.startsWith('multipart/form-data')) {
+			console.log('Parsing multipart/form-data body');
+
+			const boundary = multipart.getBoundary(rawContentType);
+			if (!boundary) {
+				throw new Error('Unable to determine multipart boundary');
+			}
+
+			const bodyBuffer = Buffer.from(event.body, event.isBase64Encoded ? 'base64' : 'utf8');
+			const parts = multipart.parse(bodyBuffer, boundary);
+
+			data = {};
+			for (const part of parts) {
+				if (!part.filename && part.name) {
+					// Text field
+					data[part.name] = part.data.toString('utf8');
+				}
+			}
+		} else {
+			console.log('Parsing JSON body');
+			data = JSON.parse(event.body);
+		}
 	} catch (error) {
-		console.error('Error parsing JSON body:', error);
+		console.error('Error parsing request body in submission-created:', error);
 		return {
 			statusCode: 400,
 			headers: {
 				'Access-Control-Allow-Origin': '*',
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({ error: 'Invalid request body' }),
+			body: JSON.stringify({
+				error: 'Invalid request body',
+				details: error.message,
+			}),
 		};
 	}
 
+	console.log('Parsed submission data:', JSON.stringify(data));
+
 	// Basic validation so we don't send empty emails
 	if (!data || (!data.email && !data.name)) {
+		console.error('Invalid submission payload: missing name and email');
 		return {
 			statusCode: 400,
 			headers: {
