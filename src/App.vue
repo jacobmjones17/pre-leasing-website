@@ -106,7 +106,7 @@ const handleSubmit = async (event) => {
             formData.append('interestType', interestType.value);
         }
         formData.append('site_url', window.location.origin);
-        const functionUrl = import.meta.env.VITE_SUBMISSION_FUNCTION_URL || '/.netlify/functions/contact';
+        const functionUrl = import.meta.env.VITE_SUBMISSION_FUNCTION_URL || '/.netlify/functions/submission-created';
         const response = await fetch(functionUrl, {
             method: 'POST',
             body: formData,

@@ -23,14 +23,13 @@
                 <input type="email" name="email" placeholder="Email address" required />
                 <input type="tel" name="phone" placeholder="Phone number" />
                 <label class="showing-toggle">
-                    <input type="checkbox" name="requestShowing" value="yes"
-                        :checked="wantsShowing"
-                        @change="$emit('update:wantsShowing', $event.target.checked)"
-                    />
+                    <input type="checkbox" name="requestShowing" value="yes" :checked="wantsShowing"
+                        @change="$emit('update:wantsShowing', $event.target.checked)" />
                     <span>Also request a showing</span>
                 </label>
                 <textarea name="details" placeholder="Move-in timeline or questions"></textarea>
-                <textarea v-if="wantsShowing" name="showingDetails" placeholder="Preferred showing days / times and any questions"></textarea>
+                <textarea v-if="wantsShowing" name="showingDetails"
+                    placeholder="Preferred showing days / times and any questions"></textarea>
                 <button type="submit" class="btn-primary" :disabled="isSubmitting">
                     {{ isSubmitting ? 'Submitting...' : 'Submit' }}
                 </button>
