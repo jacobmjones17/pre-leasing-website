@@ -1,333 +1,44 @@
 <template>
     <div class="app-shell">
-        <header class="top-nav">
-            <div class="top-nav-inner">
-                <a href="#overview" class="brand">
-                    <span class="brand-mark">PS</span>
-                    <span class="brand-text">
-                        <span class="brand-name">Pilot Station Place</span>
-                        <span class="brand-location">Goldsboro, NC</span>
-                    </span>
-                </a>
-                <nav class="nav-links">
-                    <a href="#overview">Overview</a>
-                    <a href="#homes">Homes</a>
-                    <a href="#location">Location</a>
-                    <a href="#leasing">Leasing</a>
-                    <a href="#contact">Contact</a>
-                    <a href="#preleasing" class="nav-cta">Join list</a>
-                </nav>
-            </div>
-        </header>
-
+        <TopNav />
         <main>
-            <!-- HERO -->
-            <section id="overview" class="hero" :style="heroBackground">
-                <div class="hero-inner">
-                    <div class="hero-copy">
-                        <p class="eyebrow">Now pre-leasing • New construction</p>
-                        <h1>Brand new duplex homes in Goldsboro</h1>
-                        <p>
-                            Thoughtfully designed 2-bedroom, 2-bath duplex homes with modern
-                            finishes, low-maintenance living, and quick access to Seymour
-                            Johnson Air Force Base.
-                        </p>
-                        <div class="hero-actions">
-                            <a href="#preleasing" class="btn-primary" @click="wantsShowing = false">
-                                Join pre-leasing list
-                            </a>
-                            <a href="#preleasing" class="btn-primary" @click="wantsShowing = true">
-                                Request a showing
-                            </a>
-                        </div>
-                        <div class="hero-stats">
-                            <div class="stat">
-                                <span class="stat-label">Starting at</span>
-                                <span class="stat-value">$1,400 / mo</span>
-                            </div>
-                            <div class="stat">
-                                <span class="stat-label">Early-bird</span>
-                                <span class="stat-value">$1,350 / mo</span>
-                            </div>
-                            <div class="stat">
-                                <span class="stat-label">Availability</span>
-                                <span class="stat-value">8 homes</span>
-                            </div>
-                        </div>
-                    </div>
-                    <aside class="hero-panel" aria-label="Quick leasing snapshot">
-                        <div class="hero-panel-card">
-                            <p class="panel-label">Pilot Station Place</p>
-                            <p class="panel-heading">2 bed / 2 bath duplexes</p>
-                            <div class="panel-row">
-                                <span>Approx. 900 sq ft heated</span>
-                                <span class="pill">New for 2025</span>
-                            </div>
-                            <ul class="panel-list">
-                                <li>Large covered front porch</li>
-                                <li>Private exterior storage room</li>
-                                <li>Energy-efficient construction</li>
-                            </ul>
-                            <div class="panel-footer">
-                                <span class="panel-price">From $1,400 / mo</span>
-                                <span class="panel-note">Ask about early-bird pricing</span>
-                            </div>
-                        </div>
-                    </aside>
-                </div>
-            </section>
-
-            <!-- LIVING DESCRIPTION -->
-            <section class="section">
-                <div class="section-inner">
-                    <h2>Modern, low-maintenance living</h2>
-                    <p>
-                        Pilot Station Place offers brand-new duplex homes just outside
-                        Goldsboro. Enjoy modern finishes, energy-efficient construction, and
-                        quiet surroundings that are ideal for military members,
-                    </p>
-                </div>
-            </section>
-
-            <!-- MEDIA PLACEHOLDERS -->
-            <section id="photos" class="section">
-                <div class="section-inner">
-                    <div class="media-header">
-                        <div class="media-title-with-info">
-                            <h2>Photos & floor plans</h2>
-                            <div class="media-info-tooltip" aria-label="Renderings; final homes may vary">
-                                <span class="media-info-icon">i</span>
-                                <span class="media-info-text">
-                                    Renderings only; final homes may vary slightly.
-                                </span>
-                            </div>
-                        </div>
-                        <div class="media-controls">
-                            <button
-                                type="button"
-                                class="media-arrow"
-                                @click="prevPhoto"
-                                aria-label="Previous photo"
-                            >
-                            </button>
-                            <span class="media-counter">
-                                {{ activePhotoIndex + 1 }} / {{ photos.length }}
-                            </span>
-                            <button
-                                type="button"
-                                class="media-arrow"
-                                @click="nextPhoto"
-                                aria-label="Next photo"
-                            >
-                                
-                            </button>
-                        </div>
-                    </div>
-                    <div class="media-grid">
-                        <article
-                            v-for="(photo, index) in photos"
-                            :key="photo.title"
-                            class="media-card"
-                            :class="{ 'is-active': index === activePhotoIndex }"
-                        >
-                            <div class="media-box" @click="openLightbox(index)">
-                                <img
-                                    :src="photo.src"
-                                    :alt="photo.alt"
-                                    :style="{ objectFit: photo.fit || 'cover' }"
-                                />
-                            </div>
-                            <p class="media-text">
-                                <strong>{{ photo.title }}</strong>
-                                <br />
-                                {{ photo.description }}
-                            </p>
-                        </article>
-                    </div>
-
-                    <!-- LIGHTBOX FOR PHOTOS -->
-                    <div
-                        v-if="activeLightboxPhoto"
-                        class="lightbox-backdrop"
-                        @click.self="closeLightbox"
-                    >
-                        <div class="lightbox-dialog">
-                            <button
-                                type="button"
-                                class="lightbox-close"
-                                @click="closeLightbox"
-                                aria-label="Close image"
-                            >
-                                x
-                            </button>
-                            <div class="lightbox-image-wrap">
-                                <img
-                                    :src="activeLightboxPhoto.src"
-                                    :alt="activeLightboxPhoto.alt"
-                                />
-                            </div>
-                            <p class="lightbox-caption">
-                                <strong>{{ activeLightboxPhoto.title }}</strong>
-                                <br />
-                                {{ activeLightboxPhoto.description }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- LOCATION SPLIT -->
-            <section id="location" class="section section-alt">
-                <div class="section-inner section-grid">
-                    <div>
-                        <h2>Easy access to everything</h2>
-                        <p>
-                            100–106 Pilot Station Drive, Goldsboro, NC 27534.
-                            <br />
-                            A small duplex community tucked just off key corridors, with
-                            everyday essentials only a short drive away.
-                        </p>
-                        <ul class="nearby-list" aria-label="Nearby destinations">
-                            <li class="nearby-item">
-                                <span class="nearby-label">Seymour Johnson Air Force Base</span>
-                                <span class="nearby-detail">Convenient commute via US-70 and local connectors.</span>
-                            </li>
-                            <li class="nearby-item">
-                                <span class="nearby-label">Shopping & dining</span>
-                                <span class="nearby-detail">Close to Berkeley Blvd retailers, groceries, and
-                                    restaurants.</span>
-                            </li>
-                            <li class="nearby-item">
-                                <span class="nearby-label">Schools & everyday services</span>
-                                <span class="nearby-detail">Area schools, medical offices, and daily conveniences within
-                                    a short drive.</span>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="map-wrap">
-                        <iframe src="https://www.google.com/maps?q=35.288056,-77.895&hl=en&z=16&output=embed"
-                            width="100%" height="280" style="border: 0;" loading="lazy" allowfullscreen></iframe>
-                    </div>
-                </div>
-            </section>
-
-            <!-- LEASING DETAILS -->
-            <section id="leasing" class="section">
-                <div class="section-inner">
-                    <h2>Leasing details</h2>
-                    <div class="details-grid">
-                        <div class="detail">
-                            <h3>Lease term</h3>
-                            <p>Minimum 12-month lease.</p>
-                        </div>
-                        <div class="detail">
-                            <h3>Security deposit</h3>
-                            <p>Equal to one month’s rent.</p>
-                        </div>
-                        <div class="detail">
-                            <h3>Utilities</h3>
-                            <p>Tenant is responsible for all utilities.</p>
-                        </div>
-                        <div class="detail">
-                            <h3>Pets</h3>
-                            <p>Allowed with fee; breed and size restrictions apply.</p>
-                        </div>
-                        <div class="detail">
-                            <h3>Screening</h3>
-                            <p>Income verification, background, and credit check required.</p>
-                        </div>
-                        <div class="detail">
-                            <h3>Availability</h3>
-                            <p>8 units initially available.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- PRE-LEASING + SHOWING FORM (UNIFIED) -->
-            <section id="preleasing" class="section section-form">
-                <div class="section-inner form-layout">
-                    <div class="form-copy">
-                        <h2>Join the pre-leasing list</h2>
-                        <p>
-                            Join the interest list for Pilot Station Place. You can also
-                            optionally request a showing by checking the box below.
-                        </p>
-                        <div class="form-status" aria-live="polite">
-                            <div
-                                v-if="submitStatus === 'success'"
-                                class="form-banner form-banner-success"
-                            >
-                                Thank you! Your information has been received. We'll be in touch soon.
-                            </div>
-                            <div
-                                v-else-if="submitStatus === 'error'"
-                                class="form-banner form-banner-error"
-                            >
-                                Something went wrong submitting the form. Please try again in a
-                                moment.
-                            </div>
-                        </div>
-                    </div>
-                    <form
-                        name="interest"
-                        method="POST"
-                        data-netlify="true"
-                        @submit.prevent="handleSubmit"
-                    >
-                        <input type="hidden" name="form-name" value="interest" />
-                        <input type="hidden" name="interestType" :value="interestType" />
-                        <input type="text" name="name" placeholder="Full name" required />
-                        <input type="email" name="email" placeholder="Email address" required />
-                        <input type="tel" name="phone" placeholder="Phone number" />
-                        <label class="showing-toggle">
-                            <input type="checkbox" name="requestShowing" value="yes" v-model="wantsShowing" />
-                            <span>Also request a showing</span>
-                        </label>
-                        <textarea name="details" placeholder="Move-in timeline or questions"></textarea>
-                        <textarea v-if="wantsShowing" name="showingDetails"
-                            placeholder="Preferred showing days / times and any questions"></textarea>
-                        <button type="submit" class="btn-primary" :disabled="isSubmitting">
-                            {{ isSubmitting ? 'Submitting...' : 'Submit' }}
-                        </button>
-                    </form>
-                </div>
-            </section>
-
-            <!-- CONTACT DETAILS -->
-            <section id="contact" class="section section-form section-alt">
-                <div class="section-inner form-layout">
-                    <div class="form-copy">
-                        <h2>Have questions?</h2>
-                        <p>
-                            Prefer to talk? Call or email using the details below, or use the
-                            form above and we’ll follow up with available times.
-                        </p>
-                        <p>
-                            <strong>Phone:</strong>
-                            <a href="tel:12525217965">
-                                252-521-7965</a>
-                            <br />
-                            <strong>Email:</strong>
-                            <a href="mailto:Fjpbholdings.ben@gmail.com">
-                                Fjpbholdings.ben@gmail.com
-                            </a>
-                        </p>
-                    </div>
-                </div>
-            </section>
+            <HeroSection @setWantsShowing="val => wantsShowing = val" />
+            <LivingDescriptionSection />
+            <MediaSection
+                :photos="photos"
+                :activePhotoIndex="activePhotoIndex"
+                :activeLightboxPhoto="activeLightboxPhoto"
+                @nextPhoto="nextPhoto"
+                @prevPhoto="prevPhoto"
+                @openLightbox="openLightbox"
+                @closeLightbox="closeLightbox"
+            />
+            <LocationSection />
+            <LeasingDetailsSection />
+            <PreLeasingFormSection
+                v-model:wantsShowing="wantsShowing"
+                :interestType="interestType"
+                :isSubmitting="isSubmitting"
+                :submitStatus="submitStatus"
+                :handleSubmit="handleSubmit"
+            />
+            <ContactSection />
         </main>
-
-        <footer class="site-footer">
-            <p>Pilot Station Place • Goldsboro, North Carolina</p>
-            <p>Professionally managed by FJPB Holdings</p>
-        </footer>
+        <SiteFooter />
     </div>
 </template>
 
 <script setup>
 import { computed, onMounted, ref } from 'vue';
-import heroImage from '../images/Render.png';
+import TopNav from './components/TopNav.vue';
+import HeroSection from './components/HeroSection.vue';
+import LivingDescriptionSection from './components/LivingDescriptionSection.vue';
+import MediaSection from './components/MediaSection.vue';
+import LocationSection from './components/LocationSection.vue';
+import LeasingDetailsSection from './components/LeasingDetailsSection.vue';
+import PreLeasingFormSection from './components/PreLeasingFormSection.vue';
+import ContactSection from './components/ContactSection.vue';
+import SiteFooter from './components/SiteFooter.vue';
 import frontImage from '../images/Front.png';
 import kitchenImage from '../images/Kitchen Render.png';
 import bathroomImage from '../images/Bathroom Render.png';
@@ -335,10 +46,8 @@ import floorPlanImage from '../images/floor plan.png';
 
 const wantsShowing = ref(false);
 const interestType = computed(() => (wantsShowing.value ? 'showing' : 'join'));
-
 const isSubmitting = ref(false);
 const submitStatus = ref(null); // 'success' | 'error' | null
-
 const photos = [
     {
         title: 'Front exterior',
@@ -369,61 +78,40 @@ const photos = [
         fit: 'cover',
     },
 ];
-
 const activePhotoIndex = ref(0);
 const lightboxIndex = ref(null);
-
 const nextPhoto = () => {
     activePhotoIndex.value = (activePhotoIndex.value + 1) % photos.length;
 };
-
 const prevPhoto = () => {
-    activePhotoIndex.value =
-        (activePhotoIndex.value - 1 + photos.length) % photos.length;
+    activePhotoIndex.value = (activePhotoIndex.value - 1 + photos.length) % photos.length;
 };
-
 const openLightbox = (index) => {
     lightboxIndex.value = index;
 };
-
 const closeLightbox = () => {
     lightboxIndex.value = null;
 };
-
 const activeLightboxPhoto = computed(() =>
     lightboxIndex.value === null ? null : photos[lightboxIndex.value]
 );
-
 const handleSubmit = async (event) => {
     const form = event.target;
-
     if (isSubmitting.value) return;
-
     isSubmitting.value = true;
     submitStatus.value = null;
-
     try {
         const formData = new FormData(form);
-
-        // Ensure interestType and site_url are present on the form data
         if (!formData.get('interestType')) {
             formData.append('interestType', interestType.value);
         }
         formData.append('site_url', window.location.origin);
-
-        // Use a configurable function URL so production can point at
-        // the working Faltor Drafting function, while dev can still
-        // hit the local Netlify function.
         const functionUrl = import.meta.env.VITE_SUBMISSION_FUNCTION_URL || '/.netlify/functions/submission-created';
-
-        // Send raw FormData (multipart/form-data) like the FALTOR contact form
         const response = await fetch(functionUrl, {
             method: 'POST',
             body: formData,
         });
-
         if (!response.ok) throw new Error('Form submission failed');
-
         submitStatus.value = 'success';
         form.reset();
         wantsShowing.value = false;
@@ -434,14 +122,6 @@ const handleSubmit = async (event) => {
         isSubmitting.value = false;
     }
 };
-
-const heroBackground = computed(() => ({
-    backgroundImage: `linear-gradient(135deg, rgba(2, 6, 23, 0.78), rgba(2, 6, 23, 0.7)), url(${heroImage})`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center 65%',
-    backgroundRepeat: 'no-repeat',
-}));
-
 onMounted(() => {
     document.title = 'Pilot Station Place | Brand New Duplexes in Goldsboro, NC';
 });
