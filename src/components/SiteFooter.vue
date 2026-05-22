@@ -1,9 +1,10 @@
 <template>
     <footer class="site-footer">
-        <p>Pilot Station Place • Goldsboro, North Carolina</p>
-        <p>Professionally managed by FJPB Holdings</p>
+        <p>{{ company.name }} · {{ company.location }}</p>
+        <p>Professionally managed rental homes in Wayne County</p>
     </footer>
 </template>
+
 <script setup>
-// No script needed
+import { company } from '../data/properties.js';
 </script>

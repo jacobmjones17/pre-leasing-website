@@ -5,18 +5,19 @@
                 <h2>Have questions?</h2>
                 <p>
                     Prefer to talk? Call or email using the details below, or use the
-                    form above and we’ll follow up with available times.
+                    pre-leasing form and we'll follow up with available times.
                 </p>
                 <p>
                     <strong>Phone:</strong>
-                    <a href="tel:12525217965">252-521-7965</a><br />
+                    <a :href="company.phoneHref">{{ company.phone }}</a><br />
                     <strong>Email:</strong>
-                    <a href="mailto:Fjpbholdings.ben@gmail.com">Fjpbholdings.ben@gmail.com</a>
+                    <a :href="`mailto:${company.email}`">{{ company.email }}</a>
                 </p>
             </div>
         </div>
     </section>
 </template>
+
 <script setup>
-    
+import { company } from '../data/properties.js';
 </script>

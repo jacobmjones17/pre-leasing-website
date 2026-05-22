@@ -2,129 +2,15 @@
     <div class="app-shell">
         <TopNav />
         <main>
-            <HeroSection @setWantsShowing="val => wantsShowing = val" />
-            <LivingDescriptionSection />
-            <MediaSection
-                :photos="photos"
-                :activePhotoIndex="activePhotoIndex"
-                :activeLightboxPhoto="activeLightboxPhoto"
-                @nextPhoto="nextPhoto"
-                @prevPhoto="prevPhoto"
-                @openLightbox="openLightbox"
-                @closeLightbox="closeLightbox"
-            />
-            <LocationSection />
-            <LeasingDetailsSection />
-            <PreLeasingFormSection
-                v-model:wantsShowing="wantsShowing"
-                :interestType="interestType"
-                :isSubmitting="isSubmitting"
-                :submitStatus="submitStatus"
-                :handleSubmit="handleSubmit"
-            />
-            <ContactSection />
+            <RouterView />
         </main>
         <SiteFooter />
     </div>
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue';
 import TopNav from './components/TopNav.vue';
-import HeroSection from './components/HeroSection.vue';
-import LivingDescriptionSection from './components/LivingDescriptionSection.vue';
-import MediaSection from './components/MediaSection.vue';
-import LocationSection from './components/LocationSection.vue';
-import LeasingDetailsSection from './components/LeasingDetailsSection.vue';
-import PreLeasingFormSection from './components/PreLeasingFormSection.vue';
-import ContactSection from './components/ContactSection.vue';
 import SiteFooter from './components/SiteFooter.vue';
-import frontImage from '../images/Front.png';
-import kitchenImage from '../images/Kitchen Render.png';
-import bathroomImage from '../images/Bathroom Render.png';
-import floorPlanImage from '../images/floor plan.png';
-
-const wantsShowing = ref(false);
-const interestType = computed(() => (wantsShowing.value ? 'showing' : 'join'));
-const isSubmitting = ref(false);
-const submitStatus = ref(null); // 'success' | 'error' | null
-const photos = [
-    {
-        title: 'Front exterior',
-        description: 'Street view of the duplex homes.',
-        src: frontImage,
-        alt: 'Front exterior of Pilot Station Place duplex homes',
-        fit: 'cover',
-    },
-    {
-        title: 'Kitchen and living area',
-        description: 'Open kitchen and living space with modern finishes.',
-        src: kitchenImage,
-        alt: 'Interior view of the kitchen and living area',
-        fit: 'cover',
-    },
-    {
-        title: 'Bathroom finishes',
-        description: 'Bathroom with modern fixtures and clean finishes.',
-        src: bathroomImage,
-        alt: 'Interior bathroom finishes',
-        fit: 'cover',
-    },
-    {
-        title: 'Floor plan',
-        description: '2 bed / 2 bath layout for each duplex home.',
-        src: floorPlanImage,
-        alt: 'Floor plan of the 2 bed 2 bath duplex home',
-        fit: 'cover',
-    },
-];
-const activePhotoIndex = ref(0);
-const lightboxIndex = ref(null);
-const nextPhoto = () => {
-    activePhotoIndex.value = (activePhotoIndex.value + 1) % photos.length;
-};
-const prevPhoto = () => {
-    activePhotoIndex.value = (activePhotoIndex.value - 1 + photos.length) % photos.length;
-};
-const openLightbox = (index) => {
-    lightboxIndex.value = index;
-};
-const closeLightbox = () => {
-    lightboxIndex.value = null;
-};
-const activeLightboxPhoto = computed(() =>
-    lightboxIndex.value === null ? null : photos[lightboxIndex.value]
-);
-const handleSubmit = async (event) => {
-    const form = event.target;
-    if (isSubmitting.value) return;
-    isSubmitting.value = true;
-    submitStatus.value = null;
-    try {
-        const formData = new FormData(form);
-        if (!formData.get('interestType')) {
-            formData.append('interestType', interestType.value);
-        }
-        formData.append('site_url', window.location.origin);
-        const functionUrl = import.meta.env.VITE_SUBMISSION_FUNCTION_URL || '/.netlify/functions/form-handler';
-        const response = await fetch(functionUrl, {
-            method: 'POST',
-            body: formData,
-        });
-        if (!response.ok) throw new Error('Form submission failed');
-        submitStatus.value = 'success';
-        form.reset();
-        wantsShowing.value = false;
-    } catch (error) {
-        console.error(error);
-        submitStatus.value = 'error';
-    } finally {
-        isSubmitting.value = false;
-    }
-};
-onMounted(() => {
-    document.title = 'Pilot Station Place | Brand New Duplexes in Goldsboro, NC';
-});
 </script>
 
 <style>
@@ -230,33 +116,6 @@ body {
     align-items: center;
     gap: 12px;
     font-size: 0.9rem;
-}
-
-.nav-links a {
-    color: var(--text-muted);
-    text-decoration: none;
-    padding: 4px 8px;
-    border-radius: 999px;
-    transition: background-color 0.18s ease, color 0.18s ease,
-        box-shadow 0.18s ease;
-}
-
-.nav-links a:hover {
-    color: #e5e7eb;
-    background-color: rgba(15, 23, 42, 0.7);
-    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.9);
-}
-
-.nav-cta {
-    padding: 5px 12px;
-    border-radius: 999px;
-    border: 1px solid rgba(148, 163, 184, 0.6);
-    font-size: 0.78rem;
-    text-transform: uppercase;
-    letter-spacing: 0.09em;
-    color: #e5e7eb;
-    background: radial-gradient(circle at 30% 20%, #38bdf8, #0ea5e9);
-    box-shadow: 0 12px 35px rgba(56, 189, 248, 0.45);
 }
 
 .hero {
@@ -417,36 +276,6 @@ body {
 .panel-note {
     font-size: 0.8rem;
     color: rgba(148, 163, 184, 0.96);
-}
-
-.strip {
-    border-bottom: 1px solid rgba(148, 163, 184, 0.45);
-    background: rgba(15, 23, 42, 0.6);
-    backdrop-filter: blur(16px);
-}
-
-.strip-inner {
-    max-width: 1120px;
-    margin: 0 auto;
-    padding: 10px 20px 12px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 12px;
-    font-size: 0.9rem;
-}
-
-.strip-item {
-    display: flex;
-    flex-direction: column;
-}
-
-.strip-label {
-    font-size: 0.78rem;
-    color: var(--text-muted);
-}
-
-.strip-value {
-    font-weight: 500;
 }
 
 .section {

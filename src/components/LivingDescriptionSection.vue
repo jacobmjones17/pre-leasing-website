@@ -2,14 +2,13 @@
     <section class="section">
         <div class="section-inner">
             <h2>Modern, low-maintenance living</h2>
-            <p>
-                Pilot Station Place offers brand-new duplex homes just outside
-                Goldsboro. Enjoy modern finishes, energy-efficient construction, and
-                quiet surroundings that are ideal for military members,
-            </p>
+            <p>{{ property.description }}</p>
         </div>
     </section>
 </template>
+
 <script setup>
-// No script needed
+defineProps({
+    property: { type: Object, required: true },
+});
 </script>

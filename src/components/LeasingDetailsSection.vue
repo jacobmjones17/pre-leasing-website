@@ -9,7 +9,7 @@
                 </div>
                 <div class="detail">
                     <h3>Security deposit</h3>
-                    <p>Equal to one month’s rent.</p>
+                    <p>Equal to one month's rent.</p>
                 </div>
                 <div class="detail">
                     <h3>Utilities</h3>
@@ -25,12 +25,31 @@
                 </div>
                 <div class="detail">
                     <h3>Availability</h3>
-                    <p>8 units initially available.</p>
+                    <p v-if="property">{{ availabilityText }}</p>
+                    <p v-else>
+                        Phase II (12 homes) expected October 2026 — join the pre-leasing list now.
+                        Pilot Station Place is fully leased.
+                    </p>
                 </div>
             </div>
         </div>
     </section>
 </template>
+
 <script setup>
-// No script needed
+import { computed } from 'vue';
+import { getStatusLabel } from '../data/properties.js';
+
+const props = defineProps({
+    property: { type: Object, default: null },
+});
+
+const availabilityText = computed(() => {
+    if (!props.property) return '';
+    const label = getStatusLabel(props.property);
+    if (props.property.status === 'available') {
+        return `${props.property.availableUnits} of ${props.property.totalUnits} units available.`;
+    }
+    return label;
+});
 </script>

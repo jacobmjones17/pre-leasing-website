@@ -91,14 +91,32 @@ exports.handler = async (event, context) => {
         };
     }
     const transporter = nodemailer.createTransport(smtpConfig);
-    const subject = `New interest from ${data.name || 'Website visitor'}`;
+    const propertySlug = data.property || '';
+    const propertyName = data.propertyName || propertySlug || '(not specified)';
+    const listType = data.listType || (data.interestType === 'showing' ? 'showing' : 'pre-leasing');
+
+    const listTypeLabels = {
+        'pre-leasing': 'Pre-leasing list',
+        waitlist: 'Waitlist',
+        showing: 'Showing request',
+    };
+    const listTypeLabel = listTypeLabels[listType] || listTypeLabels['pre-leasing'];
+
+    const subjectByListType = {
+        'pre-leasing': `Pre-leasing signup: ${data.name || 'Website visitor'}`,
+        waitlist: `Waitlist signup: ${data.name || 'Website visitor'}`,
+        showing: `Showing request: ${data.name || 'Website visitor'}`,
+    };
+    const subject = subjectByListType[listType] || `New signup from ${data.name || 'Website visitor'}`;
+
     const textLines = [
         `Site: ${data.site_url || ''}`,
+        `Property: ${propertyName}`,
+        `List type: ${listTypeLabel}`,
         '',
         `Name: ${data.name || ''}`,
         `Email: ${data.email || ''}`,
         `Phone: ${data.phone || ''}`,
-        `Interest type: ${data.interestType || ''}`,
         '',
         'Details:',
         data.details || '(none)',
@@ -126,17 +144,18 @@ exports.handler = async (event, context) => {
         </head>
         <body>
           <div class="card">
-            <div class="eyebrow">Pilot Station Place • Goldsboro, NC</div>
-            <h1 class="heading">New interest from ${data.name || 'Website visitor'}</h1>
+            <div class="eyebrow">FJPB Holdings • Goldsboro, NC</div>
+            <h1 class="heading">${listTypeLabel}: ${data.name || 'Website visitor'}</h1>
             <div class="meta">
-              <span class="pill">${data.interestType === 'showing' ? 'Showing request' : 'Pre-leasing interest'}</span>
-              <div style="margin-top:8px;">Submitted from: ${data.site_url || 'Unknown site'}</div>
+              <span class="pill">${listTypeLabel}</span>
+              <div style="margin-top:8px;">Property: ${propertyName}</div>
+              <div style="margin-top:4px;">Submitted from: ${data.site_url || 'Unknown site'}</div>
             </div>
             <div><div class="label">Name</div><div class="value">${data.name || '—'}</div><div class="label">Email</div><div class="value">${data.email || '—'}</div><div class="label">Phone</div><div class="value">${data.phone || '—'}</div></div>
-            <div><div class="label">Interest type</div><div class="value">${data.interestType || '—'}</div></div>
+            <div><div class="label">List type</div><div class="value">${listTypeLabel}</div></div>
             <div><div class="label">Details</div><div class="value">${data.details || '(none provided)'}</div></div>
             ${data.showingDetails ? `<div><div class="label">Showing details</div><div class="value">${data.showingDetails}</div></div>` : ''}
-            <div class="footer">This email was sent automatically from the Pilot Station Place pre-leasing site.</div>
+            <div class="footer">This email was sent automatically from the FJPB Holdings rental site.</div>
           </div>
         </body>
         </html>

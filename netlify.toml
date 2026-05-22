@@ -5,3 +5,8 @@
 [functions]
   directory = "netlify/functions"
   node_bundler = "zisi"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
