@@ -1,5 +1,5 @@
 <template>
-    <section id="overview" class="hero home-hero">
+    <section id="overview" class="hero home-hero" :style="heroBackground">
         <div class="hero-inner">
             <div class="hero-copy">
                 <p class="eyebrow">
@@ -77,16 +77,20 @@ const availableCount = computed(() =>
         .filter((p) => p.status === 'available')
         .reduce((sum, p) => sum + p.availableUnits, 0)
 );
+
+const heroBackground = computed(() => {
+    const image = phaseII.value?.heroImage ?? pilotStation.value?.heroImage;
+    if (!image) return {};
+    return {
+        backgroundImage: `linear-gradient(135deg, rgba(2, 6, 23, 0.78), rgba(2, 6, 23, 0.7)), url(${image})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center 65%',
+        backgroundRepeat: 'no-repeat',
+    };
+});
 </script>
 
 <style scoped>
-.home-hero {
-    background:
-        radial-gradient(circle at top left, rgba(56, 189, 248, 0.2), transparent 65%),
-        radial-gradient(circle at bottom right, rgba(129, 140, 248, 0.35), transparent 60%),
-        linear-gradient(135deg, #020617, #020617);
-}
-
 .hero-panel-card--highlight {
     border-color: rgba(56, 189, 248, 0.75);
     box-shadow:
