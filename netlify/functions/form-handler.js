@@ -129,34 +129,60 @@ exports.handler = async (event, context) => {
         <html lang="en">
         <head>
           <meta charset="utf-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <meta name="color-scheme" content="dark" />
+          <meta name="supported-color-schemes" content="dark" />
           <title>${subject}</title>
           <style>
-            body { background-color: #020617; margin: 0; padding: 24px; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #e5e7eb; }
-            .card { max-width: 640px; margin: 0 auto; background: radial-gradient(circle at top left, rgba(15,23,42,0.86), #020617); border-radius: 16px; border: 1px solid rgba(148,163,184,0.5); padding: 20px 22px; }
-            .eyebrow { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #9ca3af; margin-bottom: 4px; }
-            .heading { font-size: 18px; font-weight: 600; margin: 0 0 12px; }
-            .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; border: 1px solid rgba(148,163,184,0.5); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #e5e7eb; background: radial-gradient(circle at 30% 20%, #38bdf8, #0ea5e9); }
-            .meta { font-size: 13px; color: #9ca3af; margin-bottom: 14px; }
-            .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em; color: #9ca3af; margin-top: 14px; margin-bottom: 4px; }
-            .value { font-size: 14px; }
-            .footer { margin-top: 18px; font-size: 12px; color: #9ca3af; border-top: 1px solid rgba(148,163,184,0.35); padding-top: 10px; }
+            :root { color-scheme: dark; }
+            body { margin: 0; padding: 0; background-color: #020617; color: #F8FAFC; }
+            @media (prefers-color-scheme: dark) {
+              .page { background-color: #020617 !important; color: #F8FAFC !important; }
+              .card { background-color: #0F172A !important; color: #F8FAFC !important; }
+              .heading, .value { color: #F8FAFC !important; background-color: #0F172A !important; }
+              .eyebrow, .meta, .label, .footer { color: #CBD5E1 !important; background-color: #0F172A !important; }
+              .pill { background-color: #38BDF8 !important; color: #0F172A !important; }
+            }
           </style>
         </head>
-        <body>
-          <div class="card">
-            <div class="eyebrow">FJPB Holdings • Goldsboro, NC</div>
-            <h1 class="heading">${listTypeLabel}: ${data.name || 'Website visitor'}</h1>
-            <div class="meta">
-              <span class="pill">${listTypeLabel}</span>
-              <div style="margin-top:8px;">Property: ${propertyName}</div>
-              <div style="margin-top:4px;">Submitted from: ${data.site_url || 'Unknown site'}</div>
-            </div>
-            <div><div class="label">Name</div><div class="value">${data.name || '—'}</div><div class="label">Email</div><div class="value">${data.email || '—'}</div><div class="label">Phone</div><div class="value">${data.phone || '—'}</div></div>
-            <div><div class="label">List type</div><div class="value">${listTypeLabel}</div></div>
-            <div><div class="label">Details</div><div class="value">${data.details || '(none provided)'}</div></div>
-            ${data.showingDetails ? `<div><div class="label">Showing details</div><div class="value">${data.showingDetails}</div></div>` : ''}
-            <div class="footer">This email was sent automatically from the FJPB Holdings rental site.</div>
-          </div>
+        <body class="page" bgcolor="#020617" style="margin:0;padding:0;background-color:#020617;color:#F8FAFC;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+          <table role="presentation" class="page" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#020617" style="background-color:#020617;color:#F8FAFC;">
+            <tr>
+              <td align="center" bgcolor="#020617" style="background-color:#020617;padding:24px 12px;">
+                <table role="presentation" class="card" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0F172A" style="max-width:640px;background-color:#0F172A;color:#F8FAFC;border:1px solid #64748B;border-radius:16px;">
+                  <tr>
+                    <td style="padding:20px 22px;background-color:#0F172A;color:#F8FAFC;">
+                      <div class="eyebrow" style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#CBD5E1;background-color:#0F172A;margin:0 0 4px 0;">FJPB Holdings • Goldsboro, NC</div>
+                      <h1 class="heading" style="font-size:18px;font-weight:600;margin:0 0 12px 0;color:#F8FAFC;background-color:#0F172A;">${listTypeLabel}: ${data.name || 'Website visitor'}</h1>
+                      <div class="meta" style="font-size:13px;color:#CBD5E1;background-color:#0F172A;margin:0 0 14px 0;">
+                        <span class="pill" style="display:inline-block;padding:2px 8px;border-radius:999px;border:1px solid #0284C7;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#0F172A;background-color:#38BDF8;">${listTypeLabel}</span>
+                        <div style="margin-top:8px;color:#CBD5E1;background-color:#0F172A;">Property: ${propertyName}</div>
+                        <div style="margin-top:4px;color:#CBD5E1;background-color:#0F172A;">Submitted from: ${data.site_url || 'Unknown site'}</div>
+                      </div>
+                      <div>
+                        <div class="label" style="font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:#CBD5E1;background-color:#0F172A;margin:14px 0 4px 0;">Name</div>
+                        <div class="value" style="font-size:14px;color:#F8FAFC;background-color:#0F172A;">${data.name || '—'}</div>
+                        <div class="label" style="font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:#CBD5E1;background-color:#0F172A;margin:14px 0 4px 0;">Email</div>
+                        <div class="value" style="font-size:14px;color:#F8FAFC;background-color:#0F172A;">${data.email || '—'}</div>
+                        <div class="label" style="font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:#CBD5E1;background-color:#0F172A;margin:14px 0 4px 0;">Phone</div>
+                        <div class="value" style="font-size:14px;color:#F8FAFC;background-color:#0F172A;">${data.phone || '—'}</div>
+                      </div>
+                      <div>
+                        <div class="label" style="font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:#CBD5E1;background-color:#0F172A;margin:14px 0 4px 0;">List type</div>
+                        <div class="value" style="font-size:14px;color:#F8FAFC;background-color:#0F172A;">${listTypeLabel}</div>
+                      </div>
+                      <div>
+                        <div class="label" style="font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:#CBD5E1;background-color:#0F172A;margin:14px 0 4px 0;">Details</div>
+                        <div class="value" style="font-size:14px;color:#F8FAFC;background-color:#0F172A;">${data.details || '(none provided)'}</div>
+                      </div>
+                      ${data.showingDetails ? `<div><div class="label" style="font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:#CBD5E1;background-color:#0F172A;margin:14px 0 4px 0;">Showing details</div><div class="value" style="font-size:14px;color:#F8FAFC;background-color:#0F172A;">${data.showingDetails}</div></div>` : ''}
+                      <div class="footer" style="margin-top:18px;font-size:12px;color:#CBD5E1;background-color:#0F172A;border-top:1px solid #64748B;padding-top:10px;">This email was sent automatically from the FJPB Holdings rental site.</div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
         </body>
         </html>
     `;
