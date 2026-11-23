@@ -109,6 +109,35 @@ exports.handler = async (event, context) => {
     };
     const subject = subjectByListType[listType] || `New signup from ${data.name || 'Website visitor'}`;
 
+    const displayValue = (value, fallback = '—') => {
+        const text = value == null ? '' : String(value).trim();
+        return text || fallback;
+    };
+    const escapeHtml = (value) =>
+        String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    const headingName = displayValue(data.name, 'Website visitor');
+    const displayName = displayValue(data.name);
+    const displayEmail = displayValue(data.email);
+    const displayPhone = displayValue(data.phone);
+    const displayDetails = displayValue(data.details, 'Not provided');
+    const displayProperty = displayValue(propertyName, '(not specified)');
+    const displaySite = displayValue(data.site_url, 'Unknown site');
+    const showingDetailsText = displayValue(data.showingDetails, '');
+    const linkStyle = 'color:#7DD3FC;text-decoration:underline;background-color:#0F172A;';
+    const emailHtml =
+        displayEmail === '—'
+            ? '—'
+            : `<a href="mailto:${escapeHtml(displayEmail)}" style="${linkStyle}">${escapeHtml(displayEmail)}</a>`;
+    const phoneDigits = displayPhone === '—' ? '' : displayPhone.replace(/[^\d+]/g, '');
+    const phoneHtml =
+        displayPhone === '—'
+            ? '—'
+            : `<a href="tel:${escapeHtml(phoneDigits || displayPhone)}" style="${linkStyle}">${escapeHtml(displayPhone)}</a>`;
+
     const textLines = [
         `Site: ${data.site_url || ''}`,
         `Property: ${propertyName}`,
@@ -136,12 +165,14 @@ exports.handler = async (event, context) => {
           <style>
             :root { color-scheme: dark; }
             body { margin: 0; padding: 0; background-color: #020617; color: #F8FAFC; }
+            a, a:link, a:visited { color: #7DD3FC !important; text-decoration: underline !important; }
             @media (prefers-color-scheme: dark) {
               .page { background-color: #020617 !important; color: #F8FAFC !important; }
               .card { background-color: #0F172A !important; color: #F8FAFC !important; border-radius: 16px !important; overflow: hidden !important; }
               .heading, .value { color: #F8FAFC !important; background-color: #0F172A !important; }
               .eyebrow, .meta, .label, .footer { color: #CBD5E1 !important; background-color: #0F172A !important; }
               .pill { background-color: #38BDF8 !important; color: #0F172A !important; }
+              a, a:link, a:visited { color: #7DD3FC !important; background-color: #0F172A !important; }
             }
           </style>
         </head>
@@ -153,29 +184,29 @@ exports.handler = async (event, context) => {
                   <tr>
                     <td class="card" bgcolor="#0F172A" style="padding:20px 22px;background-color:#0F172A;color:#F8FAFC;border:1px solid #64748B;border-radius:16px;overflow:hidden;">
                       <div class="eyebrow" style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#CBD5E1;background-color:#0F172A;margin:0 0 4px 0;">FJPB Holdings • Goldsboro, NC</div>
-                      <h1 class="heading" style="font-size:18px;font-weight:600;margin:0 0 12px 0;color:#F8FAFC;background-color:#0F172A;">${listTypeLabel}: ${data.name || 'Website visitor'}</h1>
+                      <h1 class="heading" style="font-size:18px;font-weight:600;margin:0 0 12px 0;color:#F8FAFC;background-color:#0F172A;">${escapeHtml(listTypeLabel)}: ${escapeHtml(headingName)}</h1>
                       <div class="meta" style="font-size:13px;color:#CBD5E1;background-color:#0F172A;margin:0 0 14px 0;">
-                        <span class="pill" style="display:inline-block;padding:2px 8px;border-radius:999px;border:1px solid #0284C7;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#0F172A;background-color:#38BDF8;">${listTypeLabel}</span>
-                        <div style="margin-top:8px;color:#CBD5E1;background-color:#0F172A;">Property: ${propertyName}</div>
-                        <div style="margin-top:4px;color:#CBD5E1;background-color:#0F172A;">Submitted from: ${data.site_url || 'Unknown site'}</div>
+                        <span class="pill" style="display:inline-block;padding:2px 8px;border-radius:999px;border:1px solid #0284C7;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#0F172A;background-color:#38BDF8;">${escapeHtml(listTypeLabel)}</span>
+                        <div style="margin-top:8px;color:#CBD5E1;background-color:#0F172A;">Property: ${escapeHtml(displayProperty)}</div>
+                        <div style="margin-top:4px;color:#CBD5E1;background-color:#0F172A;">Submitted from: ${escapeHtml(displaySite)}</div>
                       </div>
                       <div>
                         <div class="label" style="font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:#CBD5E1;background-color:#0F172A;margin:14px 0 4px 0;">Name</div>
-                        <div class="value" style="font-size:14px;color:#F8FAFC;background-color:#0F172A;">${data.name || '—'}</div>
+                        <div class="value" style="font-size:14px;color:#F8FAFC;background-color:#0F172A;">${escapeHtml(displayName)}</div>
                         <div class="label" style="font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:#CBD5E1;background-color:#0F172A;margin:14px 0 4px 0;">Email</div>
-                        <div class="value" style="font-size:14px;color:#F8FAFC;background-color:#0F172A;">${data.email || '—'}</div>
+                        <div class="value" style="font-size:14px;color:#F8FAFC;background-color:#0F172A;">${emailHtml}</div>
                         <div class="label" style="font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:#CBD5E1;background-color:#0F172A;margin:14px 0 4px 0;">Phone</div>
-                        <div class="value" style="font-size:14px;color:#F8FAFC;background-color:#0F172A;">${data.phone || '—'}</div>
+                        <div class="value" style="font-size:14px;color:#F8FAFC;background-color:#0F172A;">${phoneHtml}</div>
                       </div>
                       <div>
                         <div class="label" style="font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:#CBD5E1;background-color:#0F172A;margin:14px 0 4px 0;">List type</div>
-                        <div class="value" style="font-size:14px;color:#F8FAFC;background-color:#0F172A;">${listTypeLabel}</div>
+                        <div class="value" style="font-size:14px;color:#F8FAFC;background-color:#0F172A;">${escapeHtml(listTypeLabel)}</div>
                       </div>
                       <div>
                         <div class="label" style="font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:#CBD5E1;background-color:#0F172A;margin:14px 0 4px 0;">Details</div>
-                        <div class="value" style="font-size:14px;color:#F8FAFC;background-color:#0F172A;">${data.details || '(none provided)'}</div>
+                        <div class="value" style="font-size:14px;color:#F8FAFC;background-color:#0F172A;">${escapeHtml(displayDetails)}</div>
                       </div>
-                      ${data.showingDetails ? `<div><div class="label" style="font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:#CBD5E1;background-color:#0F172A;margin:14px 0 4px 0;">Showing details</div><div class="value" style="font-size:14px;color:#F8FAFC;background-color:#0F172A;">${data.showingDetails}</div></div>` : ''}
+                      ${showingDetailsText ? `<div><div class="label" style="font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:#CBD5E1;background-color:#0F172A;margin:14px 0 4px 0;">Showing details</div><div class="value" style="font-size:14px;color:#F8FAFC;background-color:#0F172A;">${escapeHtml(showingDetailsText)}</div></div>` : ''}
                       <div class="footer" style="margin-top:18px;font-size:12px;color:#CBD5E1;background-color:#0F172A;border-top:1px solid #64748B;padding-top:10px;">This email was sent automatically from the FJPB Holdings rental site.</div>
                     </td>
                   </tr>
