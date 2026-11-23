@@ -138,7 +138,7 @@ exports.handler = async (event, context) => {
             body { margin: 0; padding: 0; background-color: #020617; color: #F8FAFC; }
             @media (prefers-color-scheme: dark) {
               .page { background-color: #020617 !important; color: #F8FAFC !important; }
-              .card { background-color: #0F172A !important; color: #F8FAFC !important; }
+              .card { background-color: #0F172A !important; color: #F8FAFC !important; border-radius: 16px !important; overflow: hidden !important; }
               .heading, .value { color: #F8FAFC !important; background-color: #0F172A !important; }
               .eyebrow, .meta, .label, .footer { color: #CBD5E1 !important; background-color: #0F172A !important; }
               .pill { background-color: #38BDF8 !important; color: #0F172A !important; }
@@ -149,9 +149,9 @@ exports.handler = async (event, context) => {
           <table role="presentation" class="page" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#020617" style="background-color:#020617;color:#F8FAFC;">
             <tr>
               <td align="center" bgcolor="#020617" style="background-color:#020617;padding:24px 12px;">
-                <table role="presentation" class="card" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0F172A" style="max-width:640px;background-color:#0F172A;color:#F8FAFC;border:1px solid #64748B;border-radius:16px;">
+                <table role="presentation" class="card" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:640px;border-collapse:separate;border-spacing:0;overflow:hidden;border-radius:16px;color:#F8FAFC;">
                   <tr>
-                    <td style="padding:20px 22px;background-color:#0F172A;color:#F8FAFC;">
+                    <td class="card" bgcolor="#0F172A" style="padding:20px 22px;background-color:#0F172A;color:#F8FAFC;border:1px solid #64748B;border-radius:16px;overflow:hidden;">
                       <div class="eyebrow" style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#CBD5E1;background-color:#0F172A;margin:0 0 4px 0;">FJPB Holdings • Goldsboro, NC</div>
                       <h1 class="heading" style="font-size:18px;font-weight:600;margin:0 0 12px 0;color:#F8FAFC;background-color:#0F172A;">${listTypeLabel}: ${data.name || 'Website visitor'}</h1>
                       <div class="meta" style="font-size:13px;color:#CBD5E1;background-color:#0F172A;margin:0 0 14px 0;">
